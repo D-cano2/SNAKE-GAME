@@ -135,3 +135,5 @@ const directionEvent = (key) => {
 const setDirection = (newDirection) => {
     direction = newDirection; // Establece la nueva dirección
 };
+
+console.log('El código JavaScript está funcionando');
