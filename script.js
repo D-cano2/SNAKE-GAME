@@ -52,7 +52,7 @@ const setGame = () => {
     direction = 'ArrowRight'; // Dirección inicial
     emptySquares = [];
     createBoard();
-    drawSnake(); // Dibuja la serpiente en la posición inicial
+    drawSnake(); // Dibuja la serpiente inicial
     updateScore(); // Muestra la puntuación inicial
 };
 
@@ -61,6 +61,35 @@ const updateScore = () => {
     scoreBoard.innerText = score;
 };
 
+// Función para manejar los eventos de las teclas (flechas)
+const directionEvent = (event) => {
+    switch (event.code) {
+        case 'ArrowUp':
+            if (direction !== 'ArrowDown') {
+                direction = 'ArrowUp';
+            }
+            break;
+        case 'ArrowDown':
+            if (direction !== 'ArrowUp') {
+                direction = 'ArrowDown';
+            }
+            break;
+        case 'ArrowLeft':
+            if (direction !== 'ArrowRight') {
+                direction = 'ArrowLeft';
+            }
+            break;
+        case 'ArrowRight':
+            if (direction !== 'ArrowLeft') {
+                direction = 'ArrowRight';
+            }
+            break;
+        default:
+            break;
+    }
+};
+
+// Maneja el inicio del juego
 const startGame = () => {
     setGame(); // Reinicia el juego
     gameOverSign.style.display = 'none'; // Oculta el mensaje de "Game Over"
@@ -71,14 +100,5 @@ const startGame = () => {
     moveInterval = setInterval(() => moveSnake(), gameSpeed); // Inicia el movimiento de la serpiente
 };
 
-startButton.addEventListener('click', () => {
-    console.log('El botón Start fue presionado');
-    startGame();
-});
-
-
-const gameOver = () => {
-    gameOverSign.style.display = 'block';
-    clearInterval(moveInterval); // Detenemos el movimiento de la serpiente
-    startButton.disabled = false; // Habilitamos el botón de "Start" después de Game Over
-};
+// Evento del botón para empezar el juego
+startButton.addEventListener('click', startGame);
