@@ -13,6 +13,14 @@ const squareTypes = {
     foodSquare: 2
 };
 
+// Definición de direcciones (hacia arriba, abajo, izquierda, derecha)
+const directions = {
+    ArrowUp: -10,    // Mover hacia arriba en el tablero
+    ArrowDown: 10,   // Mover hacia abajo en el tablero
+    ArrowLeft: -1,   // Mover hacia la izquierda
+    ArrowRight: 1    // Mover hacia la derecha
+};
+
 let snake;
 let score;
 let direction;
@@ -94,7 +102,7 @@ const directionEvent = (event) => {
 const moveSnake = () => {
     const head = snake[snake.length - 1]; // Obtén la última parte de la serpiente (la cabeza)
     const newHead = String(
-        Number(head) + directions[direction]
+        Number(head) + directions[direction] // Suma la dirección para mover la cabeza
     ).padStart(2, '0'); // Calcula la nueva cabeza sumando la dirección actual al índice de la cabeza.
 
     const [row, col] = newHead.split(''); // Extrae la fila y columna de la nueva cabeza
