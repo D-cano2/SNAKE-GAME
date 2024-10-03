@@ -1,93 +1,155 @@
-const canvas = document.getElementById('snakeGame');  // Selecciona el canvas donde se va a dibujar
-const ctx = canvas.getContext('2d');  // Obtiene el contexto 2D para dibujar en el canvas
+// HTML Elements
+const board = document.getElementById('board');
+const scoreBoard = document.getElementById('scoreBoard');
+const startButton = document.getElementById('start');
+const gameOverSign = document.getElementById('gameOver');
 
-const box = 20;  // Tamaño de cada parte de la serpiente y la comida
+// Game settings
+const boardSize = 10;
+const gameSpeed = 100;
+const squareTypes = {
+    emptySquare: 0,
+    snakeSquare: 1,
+    foodSquare: 2
+};
+const directions = {
+    ArrowUp: -10,
+    ArrowDown: 10,
+    ArrowRight: 1,
+    ArrowLeft: -1,
+};
 
-let snake = [{ x: box * 5, y: box * 5 }];  // La serpiente empieza en el centro del canvas
-let direction = 'RIGHT';  // Dirección inicial de la serpiente
-let food = { x: Math.floor(Math.random() * 20) * box, y: Math.floor(Math.random() * 20) * box };  // Posición aleatoria de la comida
+// Game variables
+let snake;
+let score;
+let direction;
+let boardSquares;
+let emptySquares;
+let moveInterval;
 
-// Se ejecuta cada vez que presionamos una tecla
-document.addEventListener('keydown', changeDirection);  // Detecta el evento de las teclas
-
-/**
- * Esta función cambia la dirección de la serpiente
- * Asegura que no se mueva en la dirección opuesta a la actual.
- */
-function changeDirection(event) {
-    const key = event.key;  // Capturamos la tecla presionada
-
-    // Cambia la dirección solo si la tecla es diferente de la dirección opuesta
-    if (key === 'ArrowUp' && direction !== 'DOWN') {
-        direction = 'UP';  // Cambia la dirección hacia arriba
-    } else if (key === 'ArrowDown' && direction !== 'UP') {
-        direction = 'DOWN';  // Cambia la dirección hacia abajo
-    } else if (key === 'ArrowLeft' && direction !== 'RIGHT') {
-        direction = 'LEFT';  // Cambia la dirección hacia izquierda
-    } else if (key === 'ArrowRight' && direction !== 'LEFT') {
-        direction = 'RIGHT';  // Cambia la dirección hacia derecha
-    }
+const drawSnake = () => {
+    snake.forEach( square => drawSquare(square, 'snakeSquare'));
 }
 
-/**
- * Dibuja la serpiente y la comida en el canvas
- * Actualiza la posición de la serpiente y maneja las colisiones.
- */
-function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);  // Limpia el canvas
+// Rellena cada cuadrado del tablero
+// @params 
+// square: posicion del cuadrado,
+// type: tipo de cuadrado (emptySquare, snakeSquare, foodSquare)
+const drawSquare = (square, type) => {
+    const [ row, column ] = square.split('');
+    boardSquares[row][column] = squareTypes[type];
+    const squareElement = document.getElementById(square);
+    squareElement.setAttribute('class', `square ${type}`);
 
-    // Dibuja la comida (roja)
-    ctx.fillStyle = 'red';  
-    ctx.fillRect(food.x, food.y, box, box);  
-
-    // Dibuja la serpiente (verde)
-    for (let i = 0; i < snake.length; i++) {
-        ctx.fillStyle = (i === 0) ? 'green' : 'lightgreen';  // La cabeza es verde, el cuerpo es verde claro
-        ctx.fillRect(snake[i].x, snake[i].y, box, box);  // Dibuja cada parte de la serpiente
-        ctx.strokeStyle = 'darkgreen';  // Color del borde
-        ctx.strokeRect(snake[i].x, snake[i].y, box, box);  // Dibuja el borde de cada parte de la serpiente
-    }
-
-    // Calculamos la nueva posición de la cabeza de la serpiente
-    let snakeX = snake[0].x;  // Coordenada X de la cabeza
-    let snakeY = snake[0].y;  // Coordenada Y de la cabeza
-
-    // Actualizamos las coordenadas de la cabeza según la dirección actual
-    if (direction === 'UP') snakeY -= box;   // Mueve la cabeza hacia arriba
-    if (direction === 'DOWN') snakeY += box; // Mueve la cabeza hacia abajo
-    if (direction === 'LEFT') snakeX -= box; // Mueve la cabeza hacia la izquierda
-    if (direction === 'RIGHT') snakeX += box; // Mueve la cabeza hacia la derecha
-
-    // Verificamos si la serpiente ha comido la comida
-    if (snakeX === food.x && snakeY === food.y) {
-        // Colocamos la comida en una nueva posición aleatoria
-        food = { x: Math.floor(Math.random() * 20) * box, y: Math.floor(Math.random() * 20) * box };
+    if(type === 'emptySquare') {
+        emptySquares.push(square);
     } else {
-        // Si no ha comido, eliminamos la última parte del cuerpo (movemos la serpiente)
-        snake.pop();
-    }
-
-    // Creamos un nuevo objeto que será la nueva cabeza de la serpiente
-    const newHead = { x: snakeX, y: snakeY };
-    snake.unshift(newHead);  // Agregamos la nueva cabeza al principio de la serpiente
-
-    // Verificamos si la serpiente ha chocado contra los bordes o consigo misma
-    if (snakeX < 0 || snakeX >= canvas.width || snakeY < 0 || snakeY >= canvas.height || collision(newHead)) {
-        clearInterval(game);  // Si hay colisión, detenemos el juego
-    }
-}
-
-/**
- * Verifica si la serpiente ha chocado con alguna parte de su cuerpo
- */
-function collision(head) {
-    for (let i = 1; i < snake.length; i++) {  // Excluye la cabeza de la serpiente
-        if (head.x === snake[i].x && head.y === snake[i].y) {  // Si la cabeza toca el cuerpo
-            return true;  // Hay colisión
+        if(emptySquares.indexOf(square) !== -1) {
+            emptySquares.splice(emptySquares.indexOf(square), 1);
         }
     }
-    return false;  // No hay colisión
 }
 
-// Llama a la función 'draw' cada 100 milisegundos (10 veces por segundo)
-const game = setInterval(draw, 100);  // El juego se actualiza cada 100ms
+const moveSnake = () => {
+    const newSquare = String(
+        Number(snake[snake.length - 1]) + directions[direction])
+        .padStart(2, '0');
+    const [row, column] = newSquare.split('');
+
+
+    if( newSquare < 0 || 
+        newSquare > boardSize * boardSize  ||
+        (direction === 'ArrowRight' && column == 0) ||
+        (direction === 'ArrowLeft' && column == 9 ||
+        boardSquares[row][column] === squareTypes.snakeSquare) ) {
+        gameOver();
+    } else {
+        snake.push(newSquare);
+        if(boardSquares[row][column] === squareTypes.foodSquare) {
+            addFood();
+        } else {
+            const emptySquare = snake.shift();
+            drawSquare(emptySquare, 'emptySquare');
+        }
+        drawSnake();
+    }
+}
+
+const addFood = () => {
+    score++;
+    updateScore();
+    createRandomFood();
+}
+
+const gameOver = () => {
+    gameOverSign.style.display = 'block';
+    clearInterval(moveInterval)
+    startButton.disabled = false;
+}
+
+const setDirection = newDirection => {
+    direction = newDirection;
+}
+
+const directionEvent = key => {
+    switch (key.code) {
+        case 'ArrowUp':
+            direction != 'ArrowDown' && setDirection(key.code)
+            break;
+        case 'ArrowDown':
+            direction != 'ArrowUp' && setDirection(key.code)
+            break;
+        case 'ArrowLeft':
+            direction != 'ArrowRight' && setDirection(key.code)
+            break;
+        case 'ArrowRight':
+            direction != 'ArrowLeft' && setDirection(key.code)
+            break;
+    }
+}
+
+const createRandomFood = () => {
+    const randomEmptySquare = emptySquares[Math.floor(Math.random() * emptySquares.length)];
+    drawSquare(randomEmptySquare, 'foodSquare');
+}
+
+const updateScore = () => {
+    scoreBoard.innerText = score;
+}
+
+const createBoard = () => {
+    boardSquares.forEach( (row, rowIndex) => {
+        row.forEach( (column, columnndex) => {
+            const squareValue = `${rowIndex}${columnndex}`;
+            const squareElement = document.createElement('div');
+            squareElement.setAttribute('class', 'square emptySquare');
+            squareElement.setAttribute('id', squareValue);
+            board.appendChild(squareElement);
+            emptySquares.push(squareValue);
+        })
+    })
+}
+
+const setGame = () => {
+    snake = ['00', '01', '02', '03'];
+    score = snake.length;
+    direction = 'ArrowRight';
+    boardSquares = Array.from(Array(boardSize), () => new Array(boardSize).fill(squareTypes.emptySquare));
+    console.log(boardSquares);
+    board.innerHTML = '';
+    emptySquares = [];
+    createBoard();
+}
+
+const startGame = () => {
+    setGame();
+    gameOverSign.style.display = 'none';
+    startButton.disabled = true;
+    drawSnake();
+    updateScore();
+    createRandomFood();
+    document.addEventListener('keydown', directionEvent);
+    moveInterval = setInterval( () => moveSnake(), gameSpeed);
+}
+
+startButton.addEventListe
