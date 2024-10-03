@@ -90,6 +90,52 @@ const directionEvent = (event) => {
     }
 };
 
+// Mueve la serpiente según la dirección actual
+const moveSnake = () => {
+    const head = snake[snake.length - 1]; // Obtén la última parte de la serpiente (la cabeza)
+    const newHead = String(
+        Number(head) + directions[direction]
+    ).padStart(2, '0'); // Calcula la nueva cabeza sumando la dirección actual al índice de la cabeza.
+
+    const [row, col] = newHead.split(''); // Extrae la fila y columna de la nueva cabeza
+
+    // Verifica si la serpiente choca con el borde o con ella misma
+    if (
+        newHead < 0 ||
+        newHead >= boardSize * boardSize ||
+        (direction === 'ArrowRight' && col === '0') ||
+        (direction === 'ArrowLeft' && col === '9') ||
+        boardSquares[row][col] === squareTypes.snakeSquare
+    ) {
+        gameOver(); // Si choca, termina el juego
+    } else {
+        snake.push(newHead); // Mueve la serpiente añadiendo una nueva cabeza
+
+        // Si la nueva posición es comida, añade comida y actualiza la puntuación
+        if (boardSquares[row][col] === squareTypes.foodSquare) {
+            addFood(); // Si hay comida en la nueva posición, añade más comida y no elimina cola
+        } else {
+            const tail = snake.shift(); // Si no hay comida, elimina la cola
+            drawSquare(tail, 'emptySquare'); // Limpia la cola
+        }
+
+        drawSnake(); // Dibuja la nueva serpiente
+    }
+};
+
+// Añade comida en una posición aleatoria
+const addFood = () => {
+    score++;
+    updateScore();
+    createRandomFood();
+};
+
+// Crea una posición aleatoria de comida
+const createRandomFood = () => {
+    const randomEmptySquare = emptySquares[Math.floor(Math.random() * emptySquares.length)];
+    drawSquare(randomEmptySquare, 'foodSquare');
+};
+
 // Maneja el inicio del juego
 const startGame = () => {
     setGame(); // Reinicia el juego
