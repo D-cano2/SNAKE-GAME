@@ -34,3 +34,19 @@
 #gameOver {
     display: none; /* Asegúrate de que esté oculto hasta que el juego termine */
 }
+#start {
+    background-color: #f35a69; /* Color de fondo del botón */
+    border: none;
+    color: white;
+    font-size: 25px;
+    padding: 10px 20px;
+    cursor: pointer; /* Asegura que el cursor cambie cuando pasas sobre el botón */
+    transition: background-color 0.3s; /* Transición para un efecto suave al pasar el cursor */
+}
+
+#start:disabled {
+    background-color: #d1d1d1; /* Color de fondo cuando el botón está deshabilitado */
+    color: #7a7a7a; /* Cambia el color del texto cuando está deshabilitado */
+    cursor: not-allowed; /* Cambia el cursor para mostrar que el botón no se puede usar */
+    opacity: 0.5; /* Hace que el botón sea semi-transparente cuando está deshabilitado */
+}

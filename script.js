@@ -61,12 +61,24 @@ const updateScore = () => {
     scoreBoard.innerText = score;
 };
 
-// Maneja el inicio del juego
 const startGame = () => {
-    setGame();
-    gameOverSign.style.display = 'none'; // Oculta el mensaje de Game Over
-    startButton.disabled = true; // Deshabilita el botón de inicio
+    setGame(); // Reinicia el juego
+    gameOverSign.style.display = 'none'; // Oculta el mensaje de "Game Over"
+    startButton.disabled = true; // Desactiva el botón mientras se juega
+    drawSnake(); // Dibuja la serpiente inicial
+    updateScore(); // Muestra la puntuación inicial
+    document.addEventListener('keydown', directionEvent); // Añade el event listener de teclas
+    moveInterval = setInterval(() => moveSnake(), gameSpeed); // Inicia el movimiento de la serpiente
 };
 
-// Evento del botón para empezar el juego
-startButton.addEventListener('click', startGame);
+startButton.addEventListener('click', () => {
+    console.log('El botón Start fue presionado');
+    startGame();
+});
+
+
+const gameOver = () => {
+    gameOverSign.style.display = 'block';
+    clearInterval(moveInterval); // Detenemos el movimiento de la serpiente
+    startButton.disabled = false; // Habilitamos el botón de "Start" después de Game Over
+};
