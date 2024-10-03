@@ -152,4 +152,4 @@ const startGame = () => {
     moveInterval = setInterval( () => moveSnake(), gameSpeed);
 }
 
-startButton.addEventListe
+startButton.addEventListeer('click', startGame);
