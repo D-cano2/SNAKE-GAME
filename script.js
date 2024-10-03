@@ -6,6 +6,7 @@ const gameOverSign = document.getElementById('gameOver');
 
 // Configuraciones del juego
 const boardSize = 10;
+const gameSpeed = 100; // Velocidad del movimiento de la serpiente (100ms entre cada movimiento)
 const squareTypes = {
     emptySquare: 0,
     snakeSquare: 1,
@@ -97,7 +98,7 @@ const startGame = () => {
     drawSnake(); // Dibuja la serpiente inicial
     updateScore(); // Muestra la puntuación inicial
     document.addEventListener('keydown', directionEvent); // Añade el event listener de teclas
-    moveInterval = setInterval(() => moveSnake(), gameSpeed); // Inicia el movimiento de la serpiente
+    moveInterval = setInterval(() => moveSnake(), gameSpeed); // Inicia el movimiento de la serpiente con el intervalo definido por gameSpeed
 };
 
 // Evento del botón para empezar el juego
