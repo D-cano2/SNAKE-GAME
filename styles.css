@@ -1,76 +1,36 @@
-/* Aplica la fuente 'Share Tech Mono' a todos los elementos de la página */
-* {
-    font-family: 'Share Tech Mono', monospace; /* Fuente monoespaciada para darle un estilo técnico */
-}
-
-/* Estilos comunes para el tablero y la información del tablero */
-#board, .boardInfo {
-    max-width: 500px; /* Limita el ancho máximo del tablero y la sección de información */
-}
-
-/* Estilos para el tablero principal */
 #board {
-    display: grid; /* Usa el modelo de cuadrícula (grid) para disponer los cuadrados */
-    grid-template-columns: repeat(10, 1fr); /* Crea 10 columnas de ancho igual (1 fracción de espacio cada una) */
-    grid-template-rows: repeat(10, 1fr); /* Crea 10 filas de altura igual */
-    gap: 1px; /* Añade un pequeño espacio entre las casillas (opcional, para que no se junten las líneas) */
+    display: grid;
+    grid-template-columns: repeat(10, 1fr); /* Crea 10 columnas */
+    grid-template-rows: repeat(10, 1fr);    /* Crea 10 filas */
+    width: 500px; /* Asegura que el tablero sea visible */
+    height: 500px; /* Asegura que el tablero tenga altura */
+    border: 2px solid black; /* Para poder ver los límites del tablero */
 }
 
-/* Estilos para el botón de inicio y la información del tablero */
-#start, .boardInfo {
-    font-size: 25px; /* Aumenta el tamaño de la fuente de los botones y los textos informativos */
-}
-
-/* Estilo para el texto de "Game Over", inicialmente está oculto */
-#gameOver {
-    display: none; /* El signo de Game Over está oculto hasta que el juego termine */
-}
-
-/* Estilos para el contenedor de información del tablero, que incluye el puntaje */
-.boardInfo {
-    display: flex; /* Usa flexbox para alinear los elementos de forma flexible */
-    justify-content: space-between; /* Distribuye el espacio entre los elementos de la izquierda a la derecha */
-    margin-top: 10px; /* Añade un margen en la parte superior para separar los elementos */
-}
-
-/* Estilos para el botón de inicio */
-#start {
-    background-color: #f35a69; /* Fondo rosado para el botón */
-    border: none; /* Sin borde */
-    color: white; /* Texto blanco */
-    padding: 10px 20px; /* Relleno alrededor del texto */
-    cursor: pointer; /* Cambia el cursor a mano cuando el mouse pasa sobre el botón */
-    border-radius: 5px; /* Bordes redondeados */
-    transition: background-color 0.3s ease; /* Transición suave para el cambio de color */
-}
-
-/* Estilos para el contador de puntaje */
-#scoreBoard {
-    display: inline-flex; /* Alinea los elementos en una fila (en línea) */
-    align-items: center; /* Centra verticalmente el texto dentro del contenedor */
-}
-
-/* Estilos para cada cuadrado dentro del tablero */
 .square {
-    aspect-ratio: 1; /* Mantiene una relación de aspecto cuadrada (el ancho es igual a la altura) */
-    width: 100%; /* Ocupa el 100% del espacio disponible en su celda de la cuadrícula */
-    height: 100%; /* Asegura que la altura también ocupe el 100% del espacio disponible */
-    border: 1px solid #ddd; /* Añade un borde delgado gris claro para distinguir los cuadros */
+    aspect-ratio: 1; /* Mantiene la relación cuadrada */
+    border: 1px solid black;
 }
 
-/* Estilos para los cuadrados vacíos */
 .emptySquare {
-    background-color: #6d71b5; /* Color de fondo azul para los cuadrados vacíos */
+    background-color: #6d71b5; /* Color de fondo de los cuadros vacíos */
 }
 
-/* Estilos para los cuadrados de la serpiente */
 .snakeSquare {
-    background-color: #e3e773; /* Color de fondo amarillo para la serpiente */
-    border: 1px solid #000; /* Bordes negros para la serpiente */
+    background-color: #e3e773; /* Color de la serpiente */
 }
 
-/* Estilos para los cuadrados de la comida */
 .foodSquare {
-    background-color: #55e7e7; /* Color de fondo verde para la comida */
-    border: 1px solid #000; /* Bordes negros para la comida */
+    background-color: #55e7e7; /* Color de la comida */
+}
+
+.boardInfo {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    max-width: 500px;
+}
+
+#gameOver {
+    display: none; /* Asegúrate de que esté oculto hasta que el juego termine */
 }
