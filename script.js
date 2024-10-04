@@ -15,10 +15,10 @@ const squareTypes = {
 
 // Definición de direcciones (hacia arriba, abajo, izquierda, derecha)
 const directions = {
-    ArrowUp: -10,    // Mover hacia arriba en el tablero
-    ArrowDown: 10,   // Mover hacia abajo en el tablero
-    ArrowLeft: -1,   // Mover hacia la izquierda
-    ArrowRight: 1    // Mover hacia la derecha
+    ArrowUp: -10,
+    ArrowDown: 10,
+    ArrowLeft: -1,
+    ArrowRight: 1
 };
 
 let snake;
@@ -26,6 +26,7 @@ let score;
 let direction;
 let boardSquares = Array.from(Array(boardSize), () => new Array(boardSize).fill(squareTypes.emptySquare));
 let emptySquares = [];
+let moveInterval; // Definición de la variable para el intervalo de movimiento
 
 // Dibuja un cuadrado (vacío, de la serpiente o comida) en la pantalla
 const drawSquare = (square, type) => {
@@ -140,7 +141,10 @@ const addFood = () => {
 
 // Crea una posición aleatoria de comida
 const createRandomFood = () => {
-    const randomEmptySquare = emptySquares[Math.floor(Math.random() * emptySquares.length)];
+    let randomEmptySquare;
+    do {
+        randomEmptySquare = emptySquares[Math.floor(Math.random() * emptySquares.length)];
+    } while (snake.includes(randomEmptySquare)); // Asegúrate de que no sea parte de la serpiente
     drawSquare(randomEmptySquare, 'foodSquare');
 };
 
